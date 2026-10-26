@@ -10,7 +10,8 @@ grep -rl '@DISTRO_NAME@' /usr/share/plasma/look-and-feel/org.distro.desktop /usr
 
 # Nome do sistema (mantém ID=debian para os programas continuarem reconhecendo a base)
 if [ ! -e /usr/lib/os-release.debian ]; then
-	dpkg-divert --local --rename --divert /usr/lib/os-release.debian --add /usr/lib/os-release
+	cp /usr/lib/os-release /usr/lib/os-release.debian
+	dpkg-divert --local --no-rename --divert /usr/lib/os-release.debian --add /usr/lib/os-release
 fi
 sed -e "s/^PRETTY_NAME=.*/PRETTY_NAME=\"$DISTRO_NAME $DISTRO_VERSION\"/" \
 	-e "s/^NAME=.*/NAME=\"$DISTRO_NAME\"/" \
@@ -46,7 +47,28 @@ fi
 # Partições: Btrfs (permite pontos de restauração) e sem swap em disco (usamos zram)
 mkdir -p "$cal/modules"
 part="$cal/modules/partition.conf"
-[ -f "$part" ] || cp /usr/share/calamares/modules/partition.conf "$part"
+echo "Arquivos do Calamares:"
+find /etc/calamares /usr/share/calamares -maxdepth 2 \( -name '*.conf' -o -type d \) 2>/dev/null | sort
+if [ ! -f "$part" ]; then
+	padrao=$(find /usr/share/calamares /usr/lib/calamares -name partition.conf 2>/dev/null | head -1)
+	if [ -n "$padrao" ]; then
+		cp "$padrao" "$part"
+	else
+		cat > "$part" <<'EOF'
+efi:
+    mountPoint: "/boot/efi"
+    recommendedSize: 300MiB
+    minimumSize: 32MiB
+    label: "EFI"
+userSwapChoices:
+    - none
+    - file
+drawNestedPartitions: false
+alwaysShowPartitionLabels: true
+availableFileSystemTypes: ["btrfs", "ext4"]
+EOF
+	fi
+fi
 definir() {
 	if grep -Eq "^#?\s*$1:" "$part"; then
 		sed -E -i "s/^#?\s*$1:.*/$1: $2/" "$part"
