@@ -10,6 +10,18 @@ mkdir -p "$telas"
 
 monitor() { echo "$1" | socat - "UNIX-CONNECT:$mon" > /dev/null; }
 
+# Clica com o mouse na posição (x, y) de uma tela 1440x900
+qmp=/tmp/qmp-qemu
+clicar() {
+	local x=$(($1 * 32767 / 1440)) y=$(($2 * 32767 / 900)) cmd
+	cmd='{"execute":"qmp_capabilities"}'
+	cmd+=$'\n{"execute":"input-send-event","arguments":{"events":[{"type":"abs","data":{"axis":"x","value":'$x'}},{"type":"abs","data":{"axis":"y","value":'$y'}}]}}'
+	cmd+=$'\n{"execute":"input-send-event","arguments":{"events":[{"type":"btn","data":{"down":true,"button":"left"}}]}}'
+	cmd+=$'\n{"execute":"input-send-event","arguments":{"events":[{"type":"btn","data":{"down":false,"button":"left"}}]}}'
+	printf '%s\n' "$cmd" | socat -t 2 - "UNIX-CONNECT:$qmp" > /dev/null
+	sleep 1
+}
+
 n=0
 print() {
 	n=$((n + 1))
@@ -43,7 +55,8 @@ qemu-system-x86_64 -enable-kvm -m 4096 -smp 2 -cpu host \
 	-vga none -device virtio-vga,xres=1440,yres=900 -display none \
 	-drive file=/tmp/disco.qcow2,if=virtio \
 	-cdrom "$iso" -boot d \
-	-monitor "unix:$mon,server,nowait" &
+	-device qemu-xhci -device usb-tablet \
+	-monitor "unix:$mon,server,nowait" -qmp "unix:$qmp,server,nowait" &
 qemu=$!
 
 sleep 15
@@ -58,9 +71,9 @@ digitar "kstart --application calamares-install-debian"
 monitor "sendkey ret"
 sleep 30; print instalador-aberto
 
-# Avança as etapas com "Próximo" (Alt+P), registrando cada tela
-for etapa in boas-vindas localizacao teclado particoes; do
-	monitor "sendkey alt-p"
+# Avança as etapas clicando em "Próximo", registrando cada tela
+for etapa in boas-vindas localizacao teclado; do
+	clicar 1106 781
 	sleep 6; print "depois-$etapa"
 done
 
