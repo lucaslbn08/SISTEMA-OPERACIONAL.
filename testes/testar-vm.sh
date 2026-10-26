@@ -26,6 +26,8 @@ digitar() {
 			' ') tecla=spc ;;
 			'-') tecla=minus ;;
 			'|') tecla=shift-less ;;
+			'.') tecla=dot ;;
+			'/') tecla=ralt-q ;;
 			*) continue ;;
 		esac
 		monitor "sendkey $tecla"
@@ -50,7 +52,11 @@ sleep 20;  print 04-janela
 
 monitor "sendkey ctrl-alt-t" # terminal
 sleep 15
-digitar "journalctl -b --no-pager | grep -i -e aurora -e decoration | tail -n 30"
+digitar "clear"
+digitar "kreadconfig6 --file kwinrc --group org.kde.kdecoration2 --key library"
+digitar "kreadconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme"
+digitar "cat .config/kwinrc"
+digitar "sudo journalctl -b -q --no-pager | grep -i -e aurora -e decorat -e qml | tail -n 25"
 sleep 10;  print 05-diagnostico
 
 kill "$qemu" || true
