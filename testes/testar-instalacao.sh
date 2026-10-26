@@ -77,4 +77,10 @@ for etapa in boas-vindas localizacao teclado; do
 	sleep 6; print "depois-$etapa"
 done
 
+# Partições: "Formatar o disco"
+clicar 404 269
+sleep 4; print particoes-formatar
+clicar 1106 781
+sleep 6; print usuarios
+
 kill "$qemu" || true
