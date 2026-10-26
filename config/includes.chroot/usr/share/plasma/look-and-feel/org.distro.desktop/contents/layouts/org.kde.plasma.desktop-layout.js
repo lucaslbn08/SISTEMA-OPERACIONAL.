@@ -42,6 +42,7 @@ tarefas.currentConfigGroup = ["General"];
 tarefas.writeConfig("launchers", [
     "applications:org.kde.dolphin.desktop",
     "applications:google-chrome.desktop",
+    "applications:firefox-esr.desktop",
     "applications:distro-whatsapp.desktop",
     "applications:distro-canva.desktop",
     "applications:libreoffice-writer.desktop",

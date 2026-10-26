@@ -28,6 +28,8 @@ plymouth
 plymouth-themes
 
 # Programas
+firefox-esr
+firefox-esr-l10n-pt-br
 dolphin
 konsole
 kate
