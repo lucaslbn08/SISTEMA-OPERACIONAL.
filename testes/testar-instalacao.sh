@@ -83,4 +83,37 @@ sleep 4; print particoes-formatar
 clicar 1106 781
 sleep 6; print usuarios
 
+# Usuários
+clicar 500 248; digitar "teste"
+clicar 500 311; monitor "sendkey ctrl-a"; digitar "teste"
+clicar 500 373; monitor "sendkey ctrl-a"; digitar "computador"
+clicar 500 436; digitar "senha1234teste"
+clicar 715 436; digitar "senha1234teste"
+sleep 2; print usuarios-preenchido
+clicar 1106 781
+sleep 6; print resumo
+
+# Instalar (o botão "Próximo" vira "Instalar") e confirma
+clicar 1106 781
+sleep 4; print confirmar
+monitor "sendkey ret"
+for i in 1 2 3 4 5 6 7 8; do
+	sleep 90; print "instalando-$i"
+done
+
+# Reinicia pelo disco, sem o pendrive
+monitor "eject -f ide1-cd0" || true
+monitor "system_reset"
+sleep 60; print instalado-login
+digitar "senha1234teste"; monitor "sendkey ret"
+sleep 45; print instalado-area-de-trabalho
+
+monitor "sendkey ctrl-alt-t"
+sleep 10
+digitar "hostnamectl"; monitor "sendkey ret"
+digitar "lsblk -f"; monitor "sendkey ret"
+digitar "sudo timeshift --list"; monitor "sendkey ret"
+sleep 3; digitar "senha1234teste"; monitor "sendkey ret"
+sleep 8; print instalado-terminal
+
 kill "$qemu" || true
