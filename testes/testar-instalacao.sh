@@ -53,9 +53,10 @@ sleep 75; print area-de-trabalho
 # Abre o instalador pelo terminal
 monitor "sendkey ctrl-alt-t"
 sleep 10
-digitar "install-debian"
+# Mesmo comando do atalho "Instalar" da área de trabalho
+digitar "kstart --application calamares-install-debian"
 monitor "sendkey ret"
-sleep 25; print instalador-aberto
+sleep 30; print instalador-aberto
 
 # Avança as etapas com "Próximo" (Alt+P), registrando cada tela
 for etapa in boas-vindas localizacao teclado particoes; do
