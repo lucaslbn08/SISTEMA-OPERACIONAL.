@@ -1,0 +1,50 @@
+name: Testar ISO
+
+# Testa o .iso mais recente numa máquina virtual, sem gerar de novo
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  testar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Baixar o .iso mais recente
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          run=$(gh run list -R "${{ github.repository }}" -w gerar-iso.yml -s success -L 1 --json databaseId -q '.[0].databaseId')
+          gh run download "$run" -R "${{ github.repository }}" -n iso
+          ls -lh *.iso
+
+      - name: Testar em máquina virtual
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-x86 ovmf socat imagemagick > /dev/null
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666"' | sudo tee /etc/udev/rules.d/99-kvm.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+          testes/testar-vm.sh "$(ls *.iso | head -1)" "$RUNNER_TEMP/relatorio/telas"
+
+      - name: Salvar prints no branch "relatorio"
+        if: always()
+        run: |
+          r="$RUNNER_TEMP/relatorio"
+          mkdir -p "$r"
+          echo "teste ${{ job.status }} $(date -u +%FT%TZ) ${{ github.sha }}" > "$r/status.txt"
+          cd "$r"
+          git init -q -b relatorio
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Teste ${{ github.sha }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" relatorio

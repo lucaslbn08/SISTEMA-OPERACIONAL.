@@ -68,25 +68,7 @@ jobs:
           sudo apt-get install -y -qq qemu-system-x86 ovmf socat imagemagick > /dev/null
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666"' | sudo tee /etc/udev/rules.d/99-kvm.rules
           sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
-          shots="$RUNNER_TEMP/relatorio/telas"
-          mkdir -p "$shots"
-          qemu-system-x86_64 -enable-kvm -m 4096 -smp 2 -cpu host \
-            -bios /usr/share/ovmf/OVMF.fd -vga none -device virtio-vga,xres=1440,yres=900 -display none \
-            -cdrom "$(ls *.iso | head -1)" -boot d \
-            -monitor unix:/tmp/monitor,server,nowait &
-          # Caso o menu de boot não inicie sozinho, aperta Enter
-          sleep 15
-          echo "sendkey ret" | socat - UNIX-CONNECT:/tmp/monitor > /dev/null
-          anterior=15
-          for t in 30 60 90 150 240; do
-            sleep $(( t - ${anterior:-0} )); anterior=$t
-            echo "screendump /tmp/tela.ppm" | socat - UNIX-CONNECT:/tmp/monitor > /dev/null
-            sleep 2
-            convert /tmp/tela.ppm "$shots/tela-${t}s.png"
-            # Abre o gerenciador de arquivos (Meta+E) para mostrar uma janela no print
-            [ "$t" = 90 ] && echo "sendkey meta_l-e" | socat - UNIX-CONNECT:/tmp/monitor > /dev/null
-          done
-          kill %1 || true
+          testes/testar-vm.sh "$(ls *.iso | head -1)" "$RUNNER_TEMP/relatorio/telas"
 
       - name: Salvar relatório no branch "relatorio"
         if: always()
