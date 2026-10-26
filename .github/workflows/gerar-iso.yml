@@ -41,6 +41,7 @@ jobs:
             apt-get update -qq
             faltando=$(grep -hvE "^\s*(#|$)" config/package-lists/desktop.list.chroot | while read -r p; do apt-cache show "$p" > /dev/null 2>&1 || echo "$p"; done)
             if [ -n "$faltando" ]; then echo "PACOTES NÃO ENCONTRADOS:" $faltando; exit 1; fi
+            { echo "== pacotes com aurorae:"; apt-cache search aurorae; apt-cache depends kwin-common kwin-wayland; } > diagnostico.txt 2>&1
             curl -fsSL https://dl.google.com/linux/linux_signing_key.pub -o config/archives/google-chrome.key.chroot
             cp config/archives/google-chrome.key.chroot config/archives/google-chrome.key.binary
             lb clean --purge
@@ -93,6 +94,7 @@ jobs:
           r="$RUNNER_TEMP/relatorio"
           [ -f build.log ] && tail -n 5000 build.log > "$r/build-final.log"
           [ -d config/bootloaders ] && cp -r config/bootloaders "$r/" || true
+          [ -f diagnostico.txt ] && cp diagnostico.txt "$r/" || true
           [ -f "$r/gerar.log" ] && tail -n 3000 "$r/gerar.log" > "$r/gerar-final.log" && rm "$r/gerar.log"
           echo "${{ job.status }} $(date -u +%FT%TZ) ${{ github.sha }}" > "$r/status.txt"
           cd "$r"

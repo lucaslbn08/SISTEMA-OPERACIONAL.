@@ -20,3 +20,4 @@ config/build
 config/archives/*.key.*
 config/includes.chroot/usr/share/distro/
 config/bootloaders/
+diagnostico.txt

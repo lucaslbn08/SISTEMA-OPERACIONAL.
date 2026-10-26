@@ -62,3 +62,7 @@ fi
 echo "Tema instalado:"
 ls -d /usr/share/aurorae/themes/WhiteSur* /usr/share/Kvantum/WhiteSur* /usr/share/plasma/desktoptheme/WhiteSur* \
 	/usr/share/color-schemes/WhiteSur* /usr/share/icons/WhiteSur* 2>/dev/null || true
+
+echo "Plugins de decoração de janela:"
+find /usr/lib -path '*kdecoration*' -name '*.so' 2>/dev/null || true
+dpkg -S aurorae 2>/dev/null | cut -d: -f1 | sort -u || true
