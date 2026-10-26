@@ -10,6 +10,9 @@ concurrency:
   group: gerar-iso
   cancel-in-progress: true
 
+permissions:
+  contents: write
+
 jobs:
   iso:
     runs-on: ubuntu-24.04
@@ -21,6 +24,7 @@ jobs:
         run: |
           sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache /usr/local/share/boost
           df -h /
+          mkdir -p "$RUNNER_TEMP/relatorio"
 
       - name: Gerar ISO (Debian 13 + KDE Plasma)
         run: |
@@ -35,8 +39,8 @@ jobs:
             lb build
             for iso in *.iso; do sha256sum "$iso" > "$iso.sha256"; done
             chown -R '"$(id -u):$(id -g)"' .
-          '
-          ls -lh *.iso
+          ' 2>&1 | tee "$RUNNER_TEMP/relatorio/gerar.log"
+          ls -lh *.iso | tee "$RUNNER_TEMP/relatorio/iso.txt"
 
       - name: Publicar ISO
         uses: actions/upload-artifact@v4
@@ -48,10 +52,37 @@ jobs:
           compression-level: 0
           retention-days: 14
 
-      - name: Guardar log em caso de erro
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: log
-          path: build.log
-          retention-days: 7
+      - name: Testar em máquina virtual
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq qemu-system-x86 ovmf socat imagemagick > /dev/null
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666"' | sudo tee /etc/udev/rules.d/99-kvm.rules
+          sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
+          shots="$RUNNER_TEMP/relatorio/telas"
+          mkdir -p "$shots"
+          qemu-system-x86_64 -enable-kvm -m 4096 -smp 2 -cpu host \
+            -bios /usr/share/ovmf/OVMF.fd -vga virtio -display none \
+            -cdrom "$(ls *.iso | head -1)" -boot d \
+            -monitor unix:/tmp/monitor,server,nowait &
+          for t in 20 60 120 180 300; do
+            sleep $(( t - ${anterior:-0} )); anterior=$t
+            echo "screendump /tmp/tela.ppm" | socat - UNIX-CONNECT:/tmp/monitor > /dev/null
+            sleep 2
+            convert /tmp/tela.ppm "$shots/tela-${t}s.png"
+          done
+          kill %1 || true
+
+      - name: Salvar relatório no branch "relatorio"
+        if: always()
+        run: |
+          r="$RUNNER_TEMP/relatorio"
+          [ -f build.log ] && tail -n 5000 build.log > "$r/build-final.log"
+          [ -f "$r/gerar.log" ] && tail -n 3000 "$r/gerar.log" > "$r/gerar-final.log" && rm "$r/gerar.log"
+          echo "${{ job.status }} $(date -u +%FT%TZ) ${{ github.sha }}" > "$r/status.txt"
+          cd "$r"
+          git init -q -b relatorio
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Relatório do build ${{ github.sha }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" relatorio
