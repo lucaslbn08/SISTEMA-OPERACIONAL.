@@ -8,6 +8,8 @@ calamares-settings-debian
 # Interface KDE Plasma 6
 kde-plasma-desktop
 kwin-wayland
+# Motor de temas de janela (necessário para os botões coloridos do WhiteSur)
+aurorae
 plasma-workspace-wallpapers
 plasma-widgets-addons
 plasma-nm

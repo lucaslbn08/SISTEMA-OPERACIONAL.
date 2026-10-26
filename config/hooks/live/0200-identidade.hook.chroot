@@ -80,10 +80,16 @@ definir defaultFileSystemType '"btrfs"'
 definir initialSwapChoice none
 
 # Atalho do instalador com o nome do sistema
-inst=/usr/share/applications/install-debian.desktop
-if [ -f "$inst" ]; then
-	sed -i -e '/^Name\[/d' -e '/^GenericName\[/d' -e "s/^Name=.*/Name=Instalar $DISTRO_NAME/" -e 's/^Icon=.*/Icon=distro-logo/' "$inst"
-fi
+echo "Atalhos do instalador:"
+grep -rlE "^Exec=.*(install-debian|calamares)" /usr/share/applications /etc/skel /etc/xdg /usr/share/calamares* 2>/dev/null \
+	| grep '\.desktop$' | while read -r inst; do
+	echo "  $inst"
+	sed -i -e '/^Name\[/d' -e '/^GenericName\[/d' -e '/^Comment\[/d' \
+		-e "s/^Name=.*/Name=Instalar $DISTRO_NAME/" -e 's/^Icon=.*/Icon=distro-logo/' "$inst"
+done
+
+# Tela de boas-vindas do KDE fala de "Debian GNU/Linux": sai do sistema
+apt-get purge -y plasma-welcome || true
 
 # zram: comprime a memória, rende mais nos 8 GB
 printf 'ALGO=zstd\nPERCENT=50\nPRIORITY=100\n' > /etc/default/zramswap

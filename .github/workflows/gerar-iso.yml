@@ -82,6 +82,8 @@ jobs:
             echo "screendump /tmp/tela.ppm" | socat - UNIX-CONNECT:/tmp/monitor > /dev/null
             sleep 2
             convert /tmp/tela.ppm "$shots/tela-${t}s.png"
+            # Abre o gerenciador de arquivos (Meta+E) para mostrar uma janela no print
+            [ "$t" = 90 ] && echo "sendkey meta_l-e" | socat - UNIX-CONNECT:/tmp/monitor > /dev/null
           done
           kill %1 || true
 
@@ -90,6 +92,7 @@ jobs:
         run: |
           r="$RUNNER_TEMP/relatorio"
           [ -f build.log ] && tail -n 5000 build.log > "$r/build-final.log"
+          [ -d config/bootloaders ] && cp -r config/bootloaders "$r/" || true
           [ -f "$r/gerar.log" ] && tail -n 3000 "$r/gerar.log" > "$r/gerar-final.log" && rm "$r/gerar.log"
           echo "${{ job.status }} $(date -u +%FT%TZ) ${{ github.sha }}" > "$r/status.txt"
           cd "$r"

@@ -1,11 +1,13 @@
 #!/bin/sh
-# Só na sessão Live (pendrive): coloca o atalho do instalador na área de trabalho.
+# Só na sessão Live (pendrive): coloca o atalho do instalador na área de trabalho, se ainda não houver um.
 [ -d /run/live/medium ] || exit 0
 
-origem=/usr/share/applications/install-debian.desktop
-[ -f "$origem" ] || exit 0
-
 pasta=$(xdg-user-dir DESKTOP 2>/dev/null || echo "$HOME/Desktop")
+grep -qsE "^Exec=.*(install-debian|calamares)" "$pasta"/*.desktop && exit 0
+
+origem=$(grep -lE "^Exec=.*(install-debian|calamares)" /usr/share/applications/*.desktop 2>/dev/null | head -1)
+[ -n "$origem" ] || exit 0
+
 mkdir -p "$pasta"
 cp "$origem" "$pasta/instalar.desktop"
 chmod +x "$pasta/instalar.desktop"
