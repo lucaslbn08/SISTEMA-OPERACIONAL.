@@ -112,8 +112,11 @@ monitor "sendkey ctrl-alt-t"
 sleep 10
 digitar "hostnamectl"; monitor "sendkey ret"
 digitar "lsblk -f"; monitor "sendkey ret"
-digitar "sudo timeshift --list"; monitor "sendkey ret"
+# Instalar um programa deve criar um ponto de restauração antes
+digitar "sudo apt-get install -y cowsay"; monitor "sendkey ret"
 sleep 3; digitar "senha1234teste"; monitor "sendkey ret"
-sleep 8; print instalado-terminal
+sleep 90
+digitar "sudo timeshift --list"; monitor "sendkey ret"
+sleep 15; print instalado-terminal
 
 kill "$qemu" || true
