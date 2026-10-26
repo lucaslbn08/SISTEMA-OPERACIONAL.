@@ -1,0 +1,21 @@
+# Gerados pelo live-build
+.build/
+cache/
+chroot/
+binary/
+chroot.*
+binary.*
+*.iso
+*.iso.sha256
+*.contents
+*.files
+*.packages
+build.log
+config/binary
+config/bootstrap
+config/chroot
+config/common
+config/source
+config/build
+config/archives/*.key.*
+config/includes.chroot/usr/share/distro/

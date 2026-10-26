@@ -1,0 +1,2 @@
+// Cria um ponto de restauração antes de instalar ou atualizar programas
+DPkg::Pre-Invoke { "/usr/sbin/distro-snapshot || true"; };

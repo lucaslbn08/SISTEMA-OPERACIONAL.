@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Canva
+Comment=Criar designs, posts e apresentações
+Exec=distro-webapp canva https://www.canva.com
+Icon=distro-canva
+StartupWMClass=distro-canva
+Categories=Graphics;Office;
+Keywords=design;arte;post;

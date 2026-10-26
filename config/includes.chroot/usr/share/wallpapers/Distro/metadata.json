@@ -1,0 +1,7 @@
+{
+    "KPlugin": {
+        "Id": "Distro",
+        "Name": "@DISTRO_NAME@",
+        "License": "CC-BY-SA-4.0"
+    }
+}

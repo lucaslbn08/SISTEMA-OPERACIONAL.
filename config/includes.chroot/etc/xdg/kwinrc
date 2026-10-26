@@ -1,0 +1,9 @@
+[org.kde.kdecoration2]
+library=org.kde.kwin.aurorae
+theme=__aurorae__svg__WhiteSur
+ButtonsOnLeft=XIA
+ButtonsOnRight=
+
+[Plugins]
+blurEnabled=true
+contrastEnabled=true

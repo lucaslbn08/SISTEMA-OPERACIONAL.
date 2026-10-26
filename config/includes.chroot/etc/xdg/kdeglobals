@@ -1,0 +1,16 @@
+[KDE]
+LookAndFeelPackage=org.distro.desktop
+widgetStyle=kvantum
+
+[General]
+font=Inter,10
+menuFont=Inter,10
+smallestReadableFont=Inter,8
+toolBarFont=Inter,10
+BrowserApplication=google-chrome.desktop
+
+[WM]
+activeFont=Inter,10,-1,5,600,0,0,0,0,0
+
+[Icons]
+Theme=WhiteSur

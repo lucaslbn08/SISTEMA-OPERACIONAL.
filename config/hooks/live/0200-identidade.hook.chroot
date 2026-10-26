@@ -1,0 +1,75 @@
+#!/bin/bash
+# Aplica o nome do sistema (distro.conf) e ajusta instalador, boot e serviços.
+set -eo pipefail
+
+. /usr/share/distro/distro.conf
+
+# Nome nos pacotes de tema e papel de parede
+grep -rl '@DISTRO_NAME@' /usr/share/plasma/look-and-feel/org.distro.desktop /usr/share/wallpapers/Distro \
+	| xargs -r sed -i "s/@DISTRO_NAME@/$DISTRO_NAME/g"
+
+# Nome do sistema (mantém ID=debian para os programas continuarem reconhecendo a base)
+if [ ! -e /usr/lib/os-release.debian ]; then
+	dpkg-divert --local --rename --divert /usr/lib/os-release.debian --add /usr/lib/os-release
+fi
+sed -e "s/^PRETTY_NAME=.*/PRETTY_NAME=\"$DISTRO_NAME $DISTRO_VERSION\"/" \
+	-e "s/^NAME=.*/NAME=\"$DISTRO_NAME\"/" \
+	/usr/lib/os-release.debian > /usr/lib/os-release
+echo "VARIANT=\"Baseado em Debian\"" >> /usr/lib/os-release
+
+# Boot: nome no menu do GRUB e tela de carregamento gráfica
+mkdir -p /etc/default/grub.d
+echo "GRUB_DISTRIBUTOR=\"$DISTRO_NAME\"" > /etc/default/grub.d/distro.cfg
+if [ -f /etc/default/grub ]; then
+	sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT="quiet"$/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/' /etc/default/grub
+fi
+plymouth-set-default-theme bgrt || true
+
+# Instalador (Calamares)
+cal=/etc/calamares
+if [ -d "$cal/branding/debian" ]; then
+	rm -rf "$cal/branding/distro"
+	cp -a "$cal/branding/debian" "$cal/branding/distro"
+	cp /usr/share/icons/hicolor/scalable/apps/distro-logo.svg "$cal/branding/distro/distro-logo.svg"
+	sed -E -i \
+		-e 's/^componentName:.*/componentName: distro/' \
+		-e "s/^(\s*(productName|shortProductName|bootloaderEntryName)):.*/\1: \"$DISTRO_NAME\"/" \
+		-e "s/^(\s*(version|shortVersion)):.*/\1: \"$DISTRO_VERSION\"/" \
+		-e "s/^(\s*(versionedName|shortVersionedName)):.*/\1: \"$DISTRO_NAME $DISTRO_VERSION\"/" \
+		-e 's/^(\s*(productLogo|productIcon)):.*/\1: "distro-logo.svg"/' \
+		"$cal/branding/distro/branding.desc"
+	sed -i 's/^branding:.*/branding: distro/' "$cal/settings.conf"
+else
+	echo "AVISO: identidade padrão do Calamares não encontrada, mantendo a do Debian" >&2
+fi
+
+# Partições: Btrfs (permite pontos de restauração) e sem swap em disco (usamos zram)
+mkdir -p "$cal/modules"
+part="$cal/modules/partition.conf"
+[ -f "$part" ] || cp /usr/share/calamares/modules/partition.conf "$part"
+definir() {
+	if grep -Eq "^#?\s*$1:" "$part"; then
+		sed -E -i "s/^#?\s*$1:.*/$1: $2/" "$part"
+	else
+		echo "$1: $2" >> "$part"
+	fi
+}
+definir defaultFileSystemType '"btrfs"'
+definir initialSwapChoice none
+
+# Atalho do instalador com o nome do sistema
+inst=/usr/share/applications/install-debian.desktop
+if [ -f "$inst" ]; then
+	sed -i -e '/^Name\[/d' -e '/^GenericName\[/d' -e "s/^Name=.*/Name=Instalar $DISTRO_NAME/" -e 's/^Icon=.*/Icon=distro-logo/' "$inst"
+fi
+
+# zram: comprime a memória, rende mais nos 8 GB
+printf 'ALGO=zstd\nPERCENT=50\nPRIORITY=100\n' > /etc/default/zramswap
+
+# Loja de apps com Flathub
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
+
+chmod 0755 /usr/bin/distro-webapp /usr/bin/distro-live-setup /usr/sbin/distro-snapshot
+
+gtk-update-icon-cache -f /usr/share/icons/hicolor || true
+update-initramfs -u -k all

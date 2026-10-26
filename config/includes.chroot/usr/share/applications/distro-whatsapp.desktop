@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=WhatsApp
+Comment=Conversas do WhatsApp
+Exec=distro-webapp whatsapp https://web.whatsapp.com
+Icon=distro-whatsapp
+StartupWMClass=distro-whatsapp
+Categories=Network;InstantMessaging;
+Keywords=zap;mensagens;chat;

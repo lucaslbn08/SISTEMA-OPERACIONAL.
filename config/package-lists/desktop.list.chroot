@@ -1,0 +1,101 @@
+# Sessão Live e instalador
+live-boot
+live-config
+live-config-systemd
+calamares
+calamares-settings-debian
+
+# Interface KDE Plasma 6
+kde-plasma-desktop
+kwin-wayland
+plasma-workspace-wallpapers
+kdeplasma-addons
+plasma-nm
+plasma-pa
+plasma-systemmonitor
+bluedevil
+powerdevil
+kscreen
+kde-config-sddm
+kde-config-screenlocker
+kde-gtk-config
+breeze-gtk-theme
+xdg-desktop-portal-kde
+qt-style-kvantum
+sddm
+sddm-theme-breeze
+plymouth
+plymouth-themes
+
+# Programas
+dolphin
+konsole
+kate
+okular
+gwenview
+spectacle
+ark
+kcalc
+kdeconnect
+kwalletmanager
+plasma-discover
+plasma-discover-backend-flatpak
+plasma-discover-backend-fwupd
+flatpak
+vlc
+libreoffice-writer
+libreoffice-calc
+libreoffice-impress
+libreoffice-qt6
+libreoffice-l10n-pt-br
+libreoffice-help-pt-br
+hunspell-pt-br
+
+# Português do Brasil
+locales
+task-brazilian-portuguese
+task-brazilian-portuguese-kde-desktop
+
+# Fontes
+fonts-inter
+fonts-noto
+fonts-noto-color-emoji
+# Substitutas livres das fontes do Office (Arial, Times, Calibri, Cambria): documentos mantêm o layout
+fonts-liberation2
+fonts-crosextra-carlito
+fonts-crosextra-caladea
+
+# Hardware (Intel, Wi-Fi, som, Bluetooth)
+firmware-linux
+firmware-linux-nonfree
+firmware-misc-nonfree
+firmware-iwlwifi
+firmware-realtek
+firmware-sof-signed
+intel-microcode
+intel-media-va-driver-non-free
+fwupd
+
+# Impressoras e scanners
+cups
+print-manager
+hplip
+printer-driver-gutenprint
+printer-driver-escpr
+ipp-usb
+sane-airscan
+skanlite
+
+# Sistema
+btrfs-progs
+ntfs-3g
+exfatprogs
+timeshift
+cron
+zram-tools
+power-profiles-daemon
+unattended-upgrades
+curl
+ca-certificates
+unzip
+p7zip-full

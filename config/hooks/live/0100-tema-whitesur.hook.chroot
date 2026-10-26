@@ -1,0 +1,64 @@
+#!/bin/bash
+# Instala o tema WhiteSur (janelas, cores, ícones e cursores no estilo macOS).
+# Projeto livre de vinceliuice: https://github.com/vinceliuice
+set -eo pipefail
+
+tmp=$(mktemp -d)
+
+baixar() {
+	local ramo
+	for ramo in master main; do
+		if curl -fsSL "https://github.com/vinceliuice/$1/archive/refs/heads/$ramo.tar.gz" | tar -xz -C "$tmp"; then
+			return 0
+		fi
+	done
+	echo "AVISO: não foi possível baixar $1" >&2
+	return 1
+}
+
+if baixar WhiteSur-kde; then
+	(cd "$tmp"/WhiteSur-kde-*/ && ./install.sh)
+fi
+if baixar WhiteSur-icon-theme; then
+	(cd "$tmp"/WhiteSur-icon-theme-*/ && ./install.sh)
+fi
+if baixar WhiteSur-cursors; then
+	(cd "$tmp"/WhiteSur-cursors-*/ && ./install.sh)
+fi
+rm -rf "$tmp"
+
+# Se alguma parte do tema faltar, volta para o padrão do KDE em vez de quebrar o visual
+xdg=/etc/xdg
+if [ ! -d /usr/share/aurorae/themes/WhiteSur ]; then
+	echo "AVISO: decoração de janela WhiteSur ausente, usando Breeze" >&2
+	sed -i -e 's/^library=.*/library=org.kde.breeze/' -e '/^theme=__aurorae__/d' "$xdg/kwinrc"
+fi
+if [ ! -d /usr/share/Kvantum/WhiteSur ]; then
+	echo "AVISO: tema Kvantum WhiteSur ausente, usando Breeze" >&2
+	sed -i 's/^widgetStyle=kvantum/widgetStyle=Breeze/' "$xdg/kdeglobals"
+fi
+if [ ! -d /usr/share/plasma/desktoptheme/WhiteSur ]; then
+	echo "AVISO: tema Plasma WhiteSur ausente" >&2
+	rm -f "$xdg/plasmarc"
+fi
+if [ ! -d /usr/share/icons/WhiteSur ]; then
+	echo "AVISO: ícones WhiteSur ausentes" >&2
+	sed -i 's/^Theme=WhiteSur/Theme=breeze/' "$xdg/kdeglobals"
+fi
+if [ ! -d /usr/share/icons/WhiteSur-cursors ]; then
+	echo "AVISO: cursores WhiteSur ausentes" >&2
+	sed -i 's/WhiteSur-cursors/breeze_cursors/' "$xdg/kcminputrc" /etc/sddm.conf.d/10-distro.conf
+fi
+
+# Cores: o arquivo de esquema é aplicado como padrão para novos usuários
+if [ -f /usr/share/color-schemes/WhiteSur.colors ]; then
+	{
+		echo
+		grep -v '^ColorScheme=\|^Name=' /usr/share/color-schemes/WhiteSur.colors
+		printf '\n[General]\nColorScheme=WhiteSur\n'
+	} >> "$xdg/kdeglobals"
+fi
+
+echo "Tema instalado:"
+ls -d /usr/share/aurorae/themes/WhiteSur* /usr/share/Kvantum/WhiteSur* /usr/share/plasma/desktoptheme/WhiteSur* \
+	/usr/share/color-schemes/WhiteSur* /usr/share/icons/WhiteSur* 2>/dev/null || true

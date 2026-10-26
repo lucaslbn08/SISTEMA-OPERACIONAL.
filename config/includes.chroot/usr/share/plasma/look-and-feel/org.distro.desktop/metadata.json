@@ -1,0 +1,11 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Id": "org.distro.desktop",
+        "Name": "@DISTRO_NAME@",
+        "Description": "Barra de menu no topo e dock embaixo",
+        "License": "GPL-2.0+",
+        "Version": "1.0"
+    },
+    "X-Plasma-APIVersion": "2"
+}

@@ -1,0 +1,16 @@
+#!/bin/sh
+# Abre um site como app próprio: janela separada, sem barra de endereço, com ícone próprio no dock.
+# Uso: distro-webapp <nome> <endereço>
+# Cada app tem seu perfil do Chrome, assim a janela não se mistura com o navegador.
+set -e
+
+nome="$1"
+url="$2"
+dados="${XDG_DATA_HOME:-$HOME/.local/share}/distro-webapps/$nome"
+
+exec google-chrome-stable \
+	--user-data-dir="$dados" \
+	--class="distro-$nome" \
+	--app="$url" \
+	--no-first-run \
+	--no-default-browser-check
