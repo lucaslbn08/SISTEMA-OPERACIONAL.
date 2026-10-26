@@ -7,6 +7,17 @@ set -e
 mkdir -p config/includes.chroot/usr/share/distro
 cp distro.conf config/includes.chroot/usr/share/distro/distro.conf
 
+# Menu de boot do pendrive: parte dos modelos do live-build e inicia sozinho após 5 segundos
+modelos=/usr/share/live/build/bootloaders/grub-pc
+if [ -d "$modelos" ] && [ ! -d config/bootloaders/grub-pc ]; then
+	mkdir -p config/bootloaders
+	cp -r "$modelos" config/bootloaders/grub-pc
+	printf '\nset timeout=5\n' >> config/bootloaders/grub-pc/config.cfg
+	echo "Modelos do menu de boot:"
+	find config/bootloaders/grub-pc -type f | sort
+	for f in config/bootloaders/grub-pc/*.cfg; do echo "== $f"; cat "$f"; done
+fi
+
 lb config noauto \
 	--distribution trixie \
 	--architectures amd64 \
