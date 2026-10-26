@@ -9,7 +9,7 @@ calamares-settings-debian
 kde-plasma-desktop
 kwin-wayland
 plasma-workspace-wallpapers
-kdeplasma-addons
+plasma-widgets-addons
 plasma-nm
 plasma-pa
 plasma-systemmonitor
@@ -18,7 +18,7 @@ powerdevil
 kscreen
 kde-config-sddm
 kde-config-screenlocker
-kde-gtk-config
+kde-config-gtk-style
 breeze-gtk-theme
 xdg-desktop-portal-kde
 qt-style-kvantum
@@ -33,7 +33,7 @@ konsole
 kate
 okular
 gwenview
-spectacle
+kde-spectacle
 ark
 kcalc
 kdeconnect

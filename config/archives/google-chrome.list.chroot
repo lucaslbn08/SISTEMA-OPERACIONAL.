@@ -1,1 +1,2 @@
-deb [arch=amd64] https://dl.google.com/linux/chrome/deb/ stable main
+# http durante a montagem (ainda sem certificados no sistema); o apt confere a assinatura do pacote mesmo assim
+deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
