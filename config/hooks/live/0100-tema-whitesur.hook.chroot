@@ -66,3 +66,9 @@ ls -d /usr/share/aurorae/themes/WhiteSur* /usr/share/Kvantum/WhiteSur* /usr/shar
 echo "Plugins de decoração de janela:"
 find /usr/lib -path '*kdecoration*' -name '*.so' 2>/dev/null || true
 dpkg -S aurorae 2>/dev/null | cut -d: -f1 | sort -u || true
+
+echo "Tema de janela WhiteSur:"
+ls -la /usr/share/aurorae/themes/WhiteSur/ || true
+cat /usr/share/aurorae/themes/WhiteSur/metadata.* 2>/dev/null || true
+echo "kwinrc padrão:"
+cat /etc/xdg/kwinrc

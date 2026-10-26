@@ -97,7 +97,7 @@ printf 'ALGO=zstd\nPERCENT=50\nPRIORITY=100\n' > /etc/default/zramswap
 # Loja de apps com Flathub
 flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
 
-chmod 0755 /usr/bin/distro-webapp /usr/bin/distro-live-setup /usr/sbin/distro-snapshot
+chmod 0755 /usr/bin/distro-webapp /usr/sbin/distro-snapshot
 
 gtk-update-icon-cache -f /usr/share/icons/hicolor || true
 update-initramfs -u -k all

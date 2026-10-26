@@ -1,6 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Preparar sessão Live
-Exec=distro-live-setup
-NoDisplay=true
-X-KDE-autostart-phase=1
