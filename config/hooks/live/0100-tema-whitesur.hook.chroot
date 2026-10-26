@@ -29,25 +29,28 @@ rm -rf "$tmp"
 
 # Se alguma parte do tema faltar, volta para o padrão do KDE em vez de quebrar o visual
 xdg=/etc/xdg
+# Padrões do pacote de visual: o Plasma aplica no primeiro login
+lnf=/usr/share/plasma/look-and-feel/org.distro.desktop/contents/defaults
 if [ ! -d /usr/share/aurorae/themes/WhiteSur ]; then
 	echo "AVISO: decoração de janela WhiteSur ausente, usando Breeze" >&2
-	sed -i -e 's/^library=.*/library=org.kde.breeze/' -e '/^theme=__aurorae__/d' "$xdg/kwinrc"
+	sed -i -e 's/^library=.*/library=org.kde.breeze/' -e '/^theme=__aurorae__/d' "$xdg/kwinrc" "$lnf"
 fi
 if [ ! -d /usr/share/Kvantum/WhiteSur ]; then
 	echo "AVISO: tema Kvantum WhiteSur ausente, usando Breeze" >&2
-	sed -i 's/^widgetStyle=kvantum/widgetStyle=Breeze/' "$xdg/kdeglobals"
+	sed -i 's/^widgetStyle=kvantum/widgetStyle=Breeze/' "$xdg/kdeglobals" "$lnf"
 fi
 if [ ! -d /usr/share/plasma/desktoptheme/WhiteSur ]; then
 	echo "AVISO: tema Plasma WhiteSur ausente" >&2
 	rm -f "$xdg/plasmarc"
+	sed -i 's/^name=WhiteSur/name=default/' "$lnf"
 fi
 if [ ! -d /usr/share/icons/WhiteSur ]; then
 	echo "AVISO: ícones WhiteSur ausentes" >&2
-	sed -i 's/^Theme=WhiteSur/Theme=breeze/' "$xdg/kdeglobals"
+	sed -i 's/^Theme=WhiteSur/Theme=breeze/' "$xdg/kdeglobals" "$lnf"
 fi
 if [ ! -d /usr/share/icons/WhiteSur-cursors ]; then
 	echo "AVISO: cursores WhiteSur ausentes" >&2
-	sed -i 's/WhiteSur-cursors/breeze_cursors/' "$xdg/kcminputrc" /etc/sddm.conf.d/10-distro.conf
+	sed -i 's/WhiteSur-cursors/breeze_cursors/' "$xdg/kcminputrc" "$lnf" /etc/sddm.conf.d/10-distro.conf
 fi
 
 # Cores: o arquivo de esquema é aplicado como padrão para novos usuários
@@ -57,6 +60,8 @@ if [ -f /usr/share/color-schemes/WhiteSur.colors ]; then
 		grep -v '^ColorScheme=\|^Name=' /usr/share/color-schemes/WhiteSur.colors
 		printf '\n[General]\nColorScheme=WhiteSur\n'
 	} >> "$xdg/kdeglobals"
+else
+	sed -i 's/^ColorScheme=WhiteSur/ColorScheme=BreezeLight/' "$lnf"
 fi
 
 echo "Tema instalado:"

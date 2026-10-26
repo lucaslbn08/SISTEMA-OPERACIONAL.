@@ -55,8 +55,6 @@ sleep 15
 digitar "clear"
 digitar "kreadconfig6 --file kwinrc --group org.kde.kdecoration2 --key library"
 digitar "kreadconfig6 --file kwinrc --group org.kde.kdecoration2 --key theme"
-digitar "cat .config/kwinrc"
-digitar "sudo journalctl -b -q --no-pager | grep -i -e aurora -e decorat -e qml | tail -n 25"
 sleep 10;  print 05-diagnostico
 
 kill "$qemu" || true

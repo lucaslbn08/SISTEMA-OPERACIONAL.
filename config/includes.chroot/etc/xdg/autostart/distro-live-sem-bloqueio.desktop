@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Sessão Live sem bloqueio de tela
+Exec=sh -c '[ -d /run/live/medium ] && kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false && kwriteconfig6 --file kscreenlockerrc --group Daemon --key LockOnResume false'
+NoDisplay=true
+X-KDE-autostart-phase=1
