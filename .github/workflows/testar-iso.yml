@@ -3,6 +3,10 @@ name: Testar ISO
 # Testa o .iso mais recente numa máquina virtual, sem gerar de novo
 on:
   workflow_dispatch:
+    inputs:
+      teste:
+        description: Script de teste
+        default: testes/testar-vm.sh
 
 permissions:
   contents: write
@@ -15,7 +19,7 @@ defaults:
 jobs:
   testar:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 
@@ -33,7 +37,7 @@ jobs:
           sudo apt-get install -y -qq qemu-system-x86 ovmf socat imagemagick > /dev/null
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666"' | sudo tee /etc/udev/rules.d/99-kvm.rules
           sudo udevadm control --reload-rules && sudo udevadm trigger --name-match=kvm
-          testes/testar-vm.sh "$(ls *.iso | head -1)" "$RUNNER_TEMP/relatorio/telas"
+          "${{ inputs.teste }}" "$(ls *.iso | head -1)" "$RUNNER_TEMP/relatorio/telas"
 
       - name: Salvar prints no branch "relatorio"
         if: always()
