@@ -113,12 +113,14 @@ sleep 45; print instalado-area-de-trabalho
 
 monitor "sendkey ctrl-alt-t"
 sleep 10
-digitar "hostnamectl"; monitor "sendkey ret"
-digitar "lsblk -f"; monitor "sendkey ret"
+digitar "clear"; monitor "sendkey ret"
+digitar "apt-cache policy distro-sistema"; monitor "sendkey ret"
+digitar "systemctl --user list-timers distro-papel-de-parede.timer"; monitor "sendkey ret"
 # Sem internet na VM: chama direto o script que o apt chama antes de instalar programas
 digitar "sudo distro-snapshot"; monitor "sendkey ret"
 sleep 3; digitar "senha1234teste"; monitor "sendkey ret"
 sleep 90
+digitar "sudo ufw status"; monitor "sendkey ret"
 digitar "sudo timeshift --list"; monitor "sendkey ret"
 sleep 15; print instalado-terminal
 
