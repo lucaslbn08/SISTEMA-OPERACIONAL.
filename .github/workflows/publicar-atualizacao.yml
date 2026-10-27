@@ -1,0 +1,43 @@
+name: Publicar atualização
+
+# Leva as mudanças do sistema para quem já instalou (canal de atualizações), em poucos minutos
+on:
+  push:
+    branches: [main]
+    paths:
+      - "pacote/**"
+      - "scripts/**"
+      - "distro.conf"
+  workflow_dispatch:
+
+concurrency:
+  group: canal-atualizacoes
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  publicar:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Montar e publicar o pacote
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHAVE_ATUALIZACOES: ${{ secrets.CHAVE_ATUALIZACOES }}
+        run: |
+          sudo apt-get install -y -qq apt-utils > /dev/null
+          scripts/ci-pacote.sh "$RUNNER_TEMP/pacote"
+
+      - name: Guardar o pacote
+        uses: actions/upload-artifact@v4
+        with:
+          name: pacote
+          path: ${{ runner.temp }}/pacote/*.deb
+          retention-days: 14

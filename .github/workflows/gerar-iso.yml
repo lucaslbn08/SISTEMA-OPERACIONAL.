@@ -1,9 +1,14 @@
 name: Gerar ISO
 
+# O pendrive é gerado de novo quando muda a montagem dele; as mudanças do sistema (pasta pacote/)
+# chegam a quem já instalou pelo workflow "Publicar atualização", sem precisar de um pendrive novo
 on:
   push:
     branches: [main]
-    paths-ignore: ["**.md"]
+    paths:
+      - "config/**"
+      - "auto/**"
+      - ".github/workflows/gerar-iso.yml"
   workflow_dispatch:
 
 concurrency:
@@ -30,6 +35,16 @@ jobs:
           df -h /
           mkdir -p "$RUNNER_TEMP/relatorio"
 
+      - name: Montar o pacote do sistema (e publicar no canal de atualizações)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CHAVE_ATUALIZACOES: ${{ secrets.CHAVE_ATUALIZACOES }}
+        run: |
+          sudo apt-get install -y -qq apt-utils > /dev/null
+          scripts/ci-pacote.sh "$RUNNER_TEMP/pacote"
+          mkdir -p config/packages.chroot
+          cp "$RUNNER_TEMP"/pacote/*.deb config/packages.chroot/
+
       - name: Gerar ISO (Debian 13 + KDE Plasma)
         run: |
           docker run --rm --privileged -v "$PWD:/build" -w /build debian:trixie bash -c '
@@ -39,9 +54,9 @@ jobs:
             # Confere se todos os pacotes existem antes de começar a montagem
             sed -i "s/^Components: main$/Components: main contrib non-free non-free-firmware/" /etc/apt/sources.list.d/debian.sources
             apt-get update -qq
-            faltando=$(grep -hvE "^\s*(#|$)" config/package-lists/desktop.list.chroot | while read -r p; do apt-cache show "$p" > /dev/null 2>&1 || echo "$p"; done)
+            dependencias=$(sed -n "s/^Depends: //p" pacote/DEBIAN/control | tr "," "\n" | awk "{print \$1}")
+            faltando=$( { grep -hvE "^\s*(#|$)" config/package-lists/desktop.list.chroot; echo "$dependencias"; } | while read -r p; do apt-cache show "$p" > /dev/null 2>&1 || echo "$p"; done)
             if [ -n "$faltando" ]; then echo "PACOTES NÃO ENCONTRADOS:" $faltando; exit 1; fi
-            { echo "== pacotes com aurorae:"; apt-cache search aurorae; apt-cache depends kwin-common kwin-wayland; } > diagnostico.txt 2>&1
             curl -fsSL https://dl.google.com/linux/linux_signing_key.pub -o config/archives/google-chrome.key.chroot
             cp config/archives/google-chrome.key.chroot config/archives/google-chrome.key.binary
             lb clean --purge
@@ -76,7 +91,6 @@ jobs:
           r="$RUNNER_TEMP/relatorio"
           [ -f build.log ] && tail -n 5000 build.log > "$r/build-final.log"
           [ -d config/bootloaders ] && cp -r config/bootloaders "$r/" || true
-          [ -f diagnostico.txt ] && cp diagnostico.txt "$r/" || true
           [ -f "$r/gerar.log" ] && tail -n 3000 "$r/gerar.log" > "$r/gerar-final.log" && rm "$r/gerar.log"
           echo "${{ job.status }} $(date -u +%FT%TZ) ${{ github.sha }}" > "$r/status.txt"
           cd "$r"

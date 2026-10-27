@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Ajustes das atualizações do sistema
+Exec=distro-migracoes
+NoDisplay=true
+X-KDE-autostart-phase=2

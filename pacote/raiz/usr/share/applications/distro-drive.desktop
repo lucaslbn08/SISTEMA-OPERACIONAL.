@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Google Drive
+Comment=Seus arquivos no Google Drive
+Exec=distro-webapp drive https://drive.google.com
+Icon=distro-drive
+StartupWMClass=distro-drive
+Categories=Network;Office;
+Keywords=drive;nuvem;arquivos;google;

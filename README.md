@@ -12,6 +12,10 @@ Sistema operacional próprio baseado em **Debian 13**, com visual no estilo macO
 - **LibreOffice** (Word, Excel e PowerPoint compatíveis)
 - **Loja de apps** (Discover + Flathub)
 - **Pontos de restauração** automáticos antes de cada atualização (Btrfs + Timeshift)
+- **Canal de atualizações próprio**: melhorias chegam sem reinstalar
+- **Papel de parede de dia e de noite** (troca às 6h e às 18h)
+- **Pasta cofre** com senha (Plasma Vault) e **firewall** ligado
+- **Google Drive** (app e pasta no gerenciador de arquivos) e **Bambu Studio** (instalado sozinho quando houver internet)
 - Português do Brasil, teclado ABNT2, Wi-Fi, Bluetooth, impressoras e scanners
 
 ## Como baixar o .iso
@@ -29,17 +33,36 @@ Sistema operacional próprio baseado em **Debian 13**, com visual no estilo macO
 
 ⚠️ A instalação apaga o disco. Faça backup dos seus arquivos antes.
 
+## Canal de atualizações
+
+Tudo o que é próprio do sistema fica no pacote `distro-sistema` (pasta `pacote/`). A cada mudança nessa
+pasta, o workflow **Publicar atualização** monta o pacote, assina e publica no branch `atualizacoes`.
+O note vê a atualização na Loja (Discover) junto com as do Debian.
+
+Requisitos (uma vez só):
+1. Repositório **público** (o note baixa as atualizações sem senha).
+2. Segredo **`CHAVE_ATUALIZACOES`** em *Settings → Secrets and variables → Actions* com a chave privada de assinatura.
+
+Para ativar o canal num sistema instalado antes dele existir:
+
+```sh
+wget -O /tmp/distro-sistema.deb https://raw.githubusercontent.com/lucaslbn08/SISTEMA-OPERACIONAL./atualizacoes/distro-sistema_atual.deb
+sudo apt install /tmp/distro-sistema.deb
+```
+
 ## Estrutura do projeto
 
 | Caminho | Conteúdo |
 |---|---|
 | `distro.conf` | Nome e versão do sistema |
 | `auto/config` | Configuração do live-build (Debian 13, idioma, boot) |
-| `config/package-lists/` | Programas instalados |
-| `config/hooks/live/` | Scripts que instalam o tema e aplicam a identidade |
-| `config/includes.chroot/` | Arquivos copiados para o sistema (layout, ícones, papel de parede) |
-| `assets/gerar-imagens.py` | Gera o papel de parede |
-| `.github/workflows/gerar-iso.yml` | Gera o .iso automaticamente a cada mudança |
+| `config/package-lists/` | Programas instalados no pendrive |
+| `config/hooks/live/` | Instalam o tema e ajustam o instalador |
+| `pacote/` | Pacote `distro-sistema`: layout, ícones, papéis de parede, scripts, configurações |
+| `scripts/` | Montam e publicam o pacote |
+| `testes/` | Testes em máquina virtual (sessão Live e instalação completa) |
+| `assets/gerar-imagens.py` | Gera os papéis de parede (dia e noite) |
+| `.github/workflows/` | Gerar ISO, Publicar atualização e Testar ISO |
 
 ## Gerar localmente (opcional)
 
@@ -48,5 +71,6 @@ Em um Debian 13 com `live-build` instalado, como root:
 ```sh
 curl -fsSL https://dl.google.com/linux/linux_signing_key.pub -o config/archives/google-chrome.key.chroot
 cp config/archives/google-chrome.key.chroot config/archives/google-chrome.key.binary
+scripts/gerar-pacote.sh 1.0.0 config/packages.chroot
 lb config && lb build
 ```

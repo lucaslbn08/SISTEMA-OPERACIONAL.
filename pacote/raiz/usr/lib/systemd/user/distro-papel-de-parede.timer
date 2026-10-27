@@ -1,0 +1,10 @@
+[Unit]
+Description=Troca o papel de parede às 6h e às 18h
+
+[Timer]
+OnStartupSec=45s
+OnCalendar=*-*-* 06,18:00:05
+Persistent=true
+
+[Install]
+WantedBy=timers.target

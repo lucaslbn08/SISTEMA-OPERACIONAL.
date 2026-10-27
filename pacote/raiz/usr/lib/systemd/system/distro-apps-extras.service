@@ -1,0 +1,18 @@
+[Unit]
+Description=Instala apps extras (Flathub) em segundo plano
+Wants=network-online.target
+After=network-online.target
+# Nunca no pendrive: baixaria tudo para a memória
+ConditionPathExists=!/run/live/medium
+
+[Service]
+# exec: não segura o boot esperando o download terminar
+Type=exec
+ExecStart=/usr/sbin/distro-apps-extras
+# Prioridade mínima: não deixa o note lento
+Nice=19
+IOSchedulingClass=idle
+CPUSchedulingPolicy=idle
+
+[Install]
+WantedBy=multi-user.target

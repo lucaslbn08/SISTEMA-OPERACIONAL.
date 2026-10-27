@@ -1,0 +1,14 @@
+#!/bin/sh
+# Roda no login: aplica, uma única vez por usuário, as mudanças das atualizações que mexem nas
+# configurações pessoais (ex.: ligar o papel de parede de dia e noite).
+[ -d /run/live/medium ] && exit 0
+
+feitas="${XDG_STATE_HOME:-$HOME/.local/state}/distro/migracoes"
+mkdir -p "$feitas"
+
+for m in /usr/share/distro/migracoes/*.sh; do
+	[ -f "$m" ] || continue
+	nome=$(basename "$m" .sh)
+	[ -e "$feitas/$nome" ] && continue
+	sh "$m" && touch "$feitas/$nome"
+done

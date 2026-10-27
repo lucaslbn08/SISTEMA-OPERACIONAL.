@@ -1,0 +1,7 @@
+{
+    "KPlugin": {
+        "Id": "DistroNoite",
+        "Name": "@DISTRO_NAME@ (noite)",
+        "License": "CC-BY-SA-4.0"
+    }
+}

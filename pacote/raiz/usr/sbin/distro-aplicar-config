@@ -1,0 +1,76 @@
+#!/bin/sh
+# Aplica as configurações do sistema. Roda ao instalar ou atualizar o pacote distro-sistema
+# (e na montagem do pendrive); pode rodar várias vezes sem problema.
+set -e
+
+. /usr/share/distro/distro.conf
+base=/usr/share/distro
+
+# Configurações em /etc (padrões do KDE, apt, tela de login...)
+cp -a "$base/etc/." /etc/
+
+# Tema: se faltar alguma parte do WhiteSur, volta para o padrão do KDE em vez de quebrar o visual
+xdg=/etc/xdg
+lnf=/usr/share/plasma/look-and-feel/org.distro.desktop/contents/defaults
+cp "$base/lnf-defaults" "$lnf"
+if [ ! -d /usr/share/aurorae/themes/WhiteSur ]; then
+	sed -i -e 's/^library=.*/library=org.kde.breeze/' -e '/^theme=__aurorae__/d' "$xdg/kwinrc" "$lnf"
+fi
+if [ ! -d /usr/share/Kvantum/WhiteSur ]; then
+	sed -i 's/^widgetStyle=kvantum/widgetStyle=Breeze/' "$xdg/kdeglobals" "$lnf"
+fi
+if [ ! -d /usr/share/plasma/desktoptheme/WhiteSur ]; then
+	rm -f "$xdg/plasmarc"
+	sed -i 's/^name=WhiteSur/name=default/' "$lnf"
+fi
+if [ ! -d /usr/share/icons/WhiteSur ]; then
+	sed -i 's/^Theme=WhiteSur/Theme=breeze/' "$xdg/kdeglobals" "$lnf"
+fi
+if [ ! -d /usr/share/icons/WhiteSur-cursors ]; then
+	sed -i 's/WhiteSur-cursors/breeze_cursors/' "$xdg/kcminputrc" "$lnf" /etc/sddm.conf.d/10-distro.conf
+fi
+# Cores do tema como padrão para novos usuários
+if [ -f /usr/share/color-schemes/WhiteSur.colors ]; then
+	{
+		echo
+		grep -v '^ColorScheme=\|^Name=' /usr/share/color-schemes/WhiteSur.colors
+		printf '\n[General]\nColorScheme=WhiteSur\n'
+	} >> "$xdg/kdeglobals"
+else
+	sed -i 's/^ColorScheme=WhiteSur/ColorScheme=BreezeLight/' "$lnf"
+fi
+
+# Nome do sistema (mantém ID=debian para os programas continuarem reconhecendo a base)
+if [ ! -e /usr/lib/os-release.debian ]; then
+	cp /usr/lib/os-release /usr/lib/os-release.debian
+	dpkg-divert --local --no-rename --divert /usr/lib/os-release.debian --add /usr/lib/os-release
+fi
+sed -e "s/^PRETTY_NAME=.*/PRETTY_NAME=\"$DISTRO_NAME $DISTRO_VERSION\"/" \
+	-e "s/^NAME=.*/NAME=\"$DISTRO_NAME\"/" \
+	/usr/lib/os-release.debian > /usr/lib/os-release
+echo "VARIANT=\"Baseado em Debian\"" >> /usr/lib/os-release
+
+# Boot: nome no menu do GRUB e tela de carregamento gráfica
+mkdir -p /etc/default/grub.d
+echo "GRUB_DISTRIBUTOR=\"$DISTRO_NAME\"" > /etc/default/grub.d/distro.cfg
+if [ -f /etc/default/grub ]; then
+	sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT="quiet"$/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/' /etc/default/grub
+fi
+
+# zram: comprime a memória, rende mais nos 8 GB
+printf 'ALGO=zstd\nPERCENT=50\nPRIORITY=100\n' > /etc/default/zramswap
+
+# Firewall: bloqueia conexões que chegam de fora; libera só o KDE Connect (celular)
+ufw default deny incoming > /dev/null 2>&1 || true
+ufw default allow outgoing > /dev/null 2>&1 || true
+ufw allow 1714:1764/tcp > /dev/null 2>&1 || true
+ufw allow 1714:1764/udp > /dev/null 2>&1 || true
+sed -i 's/^ENABLED=.*/ENABLED=yes/' /etc/ufw/ufw.conf
+if [ -d /run/systemd/system ] && ! ischroot; then
+	ufw --force enable > /dev/null 2>&1 || true
+fi
+
+# Loja de apps com Flathub
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo > /dev/null 2>&1 || true
+
+gtk-update-icon-cache -q -f /usr/share/icons/hicolor || true

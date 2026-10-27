@@ -1,29 +1,11 @@
 #!/bin/bash
-# Aplica o nome do sistema (distro.conf) e ajusta instalador, boot e serviços.
+# Identidade do pendrive e do instalador (Calamares).
 set -eo pipefail
 
 . /usr/share/distro/distro.conf
 
-# Nome nos pacotes de tema e papel de parede
-grep -rl '@DISTRO_NAME@' /usr/share/plasma/look-and-feel/org.distro.desktop /usr/share/wallpapers/Distro \
-	| xargs -r sed -i "s/@DISTRO_NAME@/$DISTRO_NAME/g"
-
-# Nome do sistema (mantém ID=debian para os programas continuarem reconhecendo a base)
-if [ ! -e /usr/lib/os-release.debian ]; then
-	cp /usr/lib/os-release /usr/lib/os-release.debian
-	dpkg-divert --local --no-rename --divert /usr/lib/os-release.debian --add /usr/lib/os-release
-fi
-sed -e "s/^PRETTY_NAME=.*/PRETTY_NAME=\"$DISTRO_NAME $DISTRO_VERSION\"/" \
-	-e "s/^NAME=.*/NAME=\"$DISTRO_NAME\"/" \
-	/usr/lib/os-release.debian > /usr/lib/os-release
-echo "VARIANT=\"Baseado em Debian\"" >> /usr/lib/os-release
-
-# Boot: nome no menu do GRUB e tela de carregamento gráfica
-mkdir -p /etc/default/grub.d
-echo "GRUB_DISTRIBUTOR=\"$DISTRO_NAME\"" > /etc/default/grub.d/distro.cfg
-if [ -f /etc/default/grub ]; then
-	sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT="quiet"$/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/' /etc/default/grub
-fi
+# O nome, o GRUB, o zram, o firewall etc. vêm do pacote distro-sistema (distro-aplicar-config).
+# Aqui fica só o que é do pendrive e do instalador.
 plymouth-set-default-theme bgrt || true
 
 # Instalador (Calamares)
@@ -91,13 +73,4 @@ done
 # Tela de boas-vindas do KDE fala de "Debian GNU/Linux": sai do sistema
 apt-get purge -y plasma-welcome || true
 
-# zram: comprime a memória, rende mais nos 8 GB
-printf 'ALGO=zstd\nPERCENT=50\nPRIORITY=100\n' > /etc/default/zramswap
-
-# Loja de apps com Flathub
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
-
-chmod 0755 /usr/bin/distro-webapp /usr/bin/distro-live-ajustes /usr/sbin/distro-snapshot
-
-gtk-update-icon-cache -f /usr/share/icons/hicolor || true
 update-initramfs -u -k all

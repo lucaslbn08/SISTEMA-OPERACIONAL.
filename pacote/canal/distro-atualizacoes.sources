@@ -1,0 +1,5 @@
+# Canal de atualizações do sistema (pacote distro-sistema)
+Types: deb
+URIs: @URL@
+Suites: ./
+Signed-By: /usr/share/keyrings/distro-atualizacoes.gpg

@@ -3,10 +3,6 @@ set -e
 
 . ./distro.conf
 
-# Disponibiliza o nome do sistema para os hooks dentro do chroot
-mkdir -p config/includes.chroot/usr/share/distro
-cp distro.conf config/includes.chroot/usr/share/distro/distro.conf
-
 # Menu de boot do pendrive: parte dos modelos do live-build e inicia sozinho após 5 segundos
 modelos=/usr/share/live/build/bootloaders/grub-pc
 if [ -d "$modelos" ] && [ ! -d config/bootloaders/grub-pc ]; then

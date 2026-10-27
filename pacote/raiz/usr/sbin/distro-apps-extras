@@ -1,0 +1,13 @@
+#!/bin/sh
+# Instala os apps de /usr/share/distro/flatpaks.list que ainda faltam.
+# Roda em segundo plano depois que a internet conecta; se falhar, tenta de novo no próximo boot.
+
+lista=/usr/share/distro/flatpaks.list
+
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || exit 0
+
+grep -vE '^\s*(#|$)' "$lista" | while read -r app; do
+	flatpak info --system "$app" > /dev/null 2>&1 && continue
+	echo "Instalando $app..."
+	flatpak install --system --noninteractive -y flathub "$app" || echo "Falhou: $app (tenta de novo no próximo boot)"
+done

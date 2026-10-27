@@ -1,0 +1,6 @@
+[Unit]
+Description=Papel de parede de dia e de noite
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/distro-papel-de-parede

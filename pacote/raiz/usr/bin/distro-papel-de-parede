@@ -1,0 +1,17 @@
+#!/bin/sh
+# Troca o papel de parede entre dia (6h às 18h) e noite.
+# Só troca se o papel de parede atual for um dos do sistema: uma escolha pessoal é respeitada.
+
+hora=$(date +%H)
+if [ "$hora" -ge 6 ] && [ "$hora" -lt 18 ]; then
+	nome=Distro
+else
+	nome=DistroNoite
+fi
+
+cfg="${XDG_CONFIG_HOME:-$HOME/.config}/plasma-org.kde.plasma.desktop-appletsrc"
+[ -f "$cfg" ] || exit 0
+grep -q "wallpapers/Distro" "$cfg" || exit 0
+grep -q "wallpapers/$nome/" "$cfg" && exit 0
+
+exec plasma-apply-wallpaperimage "/usr/share/wallpapers/$nome/contents/images/2560x1600.jpg"

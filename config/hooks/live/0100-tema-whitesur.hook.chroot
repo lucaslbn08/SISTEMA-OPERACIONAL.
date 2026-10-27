@@ -27,53 +27,9 @@ if baixar WhiteSur-cursors; then
 fi
 rm -rf "$tmp"
 
-# Se alguma parte do tema faltar, volta para o padrão do KDE em vez de quebrar o visual
-xdg=/etc/xdg
-# Padrões do pacote de visual: o Plasma aplica no primeiro login
-lnf=/usr/share/plasma/look-and-feel/org.distro.desktop/contents/defaults
-if [ ! -d /usr/share/aurorae/themes/WhiteSur ]; then
-	echo "AVISO: decoração de janela WhiteSur ausente, usando Breeze" >&2
-	sed -i -e 's/^library=.*/library=org.kde.breeze/' -e '/^theme=__aurorae__/d' "$xdg/kwinrc" "$lnf"
-fi
-if [ ! -d /usr/share/Kvantum/WhiteSur ]; then
-	echo "AVISO: tema Kvantum WhiteSur ausente, usando Breeze" >&2
-	sed -i 's/^widgetStyle=kvantum/widgetStyle=Breeze/' "$xdg/kdeglobals" "$lnf"
-fi
-if [ ! -d /usr/share/plasma/desktoptheme/WhiteSur ]; then
-	echo "AVISO: tema Plasma WhiteSur ausente" >&2
-	rm -f "$xdg/plasmarc"
-	sed -i 's/^name=WhiteSur/name=default/' "$lnf"
-fi
-if [ ! -d /usr/share/icons/WhiteSur ]; then
-	echo "AVISO: ícones WhiteSur ausentes" >&2
-	sed -i 's/^Theme=WhiteSur/Theme=breeze/' "$xdg/kdeglobals" "$lnf"
-fi
-if [ ! -d /usr/share/icons/WhiteSur-cursors ]; then
-	echo "AVISO: cursores WhiteSur ausentes" >&2
-	sed -i 's/WhiteSur-cursors/breeze_cursors/' "$xdg/kcminputrc" "$lnf" /etc/sddm.conf.d/10-distro.conf
-fi
-
-# Cores: o arquivo de esquema é aplicado como padrão para novos usuários
-if [ -f /usr/share/color-schemes/WhiteSur.colors ]; then
-	{
-		echo
-		grep -v '^ColorScheme=\|^Name=' /usr/share/color-schemes/WhiteSur.colors
-		printf '\n[General]\nColorScheme=WhiteSur\n'
-	} >> "$xdg/kdeglobals"
-else
-	sed -i 's/^ColorScheme=WhiteSur/ColorScheme=BreezeLight/' "$lnf"
-fi
+# Reaplica as configurações do sistema agora que o tema existe (ajusta o que faltar do tema)
+/usr/sbin/distro-aplicar-config
 
 echo "Tema instalado:"
 ls -d /usr/share/aurorae/themes/WhiteSur* /usr/share/Kvantum/WhiteSur* /usr/share/plasma/desktoptheme/WhiteSur* \
 	/usr/share/color-schemes/WhiteSur* /usr/share/icons/WhiteSur* 2>/dev/null || true
-
-echo "Plugins de decoração de janela:"
-find /usr/lib -path '*kdecoration*' -name '*.so' 2>/dev/null || true
-dpkg -S aurorae 2>/dev/null | cut -d: -f1 | sort -u || true
-
-echo "Tema de janela WhiteSur:"
-ls -la /usr/share/aurorae/themes/WhiteSur/ || true
-cat /usr/share/aurorae/themes/WhiteSur/metadata.* 2>/dev/null || true
-echo "kwinrc padrão:"
-cat /etc/xdg/kwinrc

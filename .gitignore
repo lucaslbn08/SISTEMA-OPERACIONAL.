@@ -18,6 +18,6 @@ config/common
 config/source
 config/build
 config/archives/*.key.*
-config/includes.chroot/usr/share/distro/
+pacote/raiz/usr/share/distro/distro.conf
 config/bootloaders/
-diagnostico.txt
+config/packages.chroot/

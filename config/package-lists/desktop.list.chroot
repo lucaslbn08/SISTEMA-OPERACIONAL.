@@ -93,6 +93,17 @@ ipp-usb
 sane-airscan
 skanlite
 
+# Segurança: firewall, pasta cofre e cofre de senhas aberto no login
+ufw
+plasma-firewall
+plasma-vault
+gocryptfs
+libpam-kwallet5
+
+# Google Drive dentro do gerenciador de arquivos (Contas online do KDE)
+kio-gdrive
+kaccounts-providers
+
 # Sistema
 btrfs-progs
 ntfs-3g

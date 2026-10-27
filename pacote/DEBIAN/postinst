@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = configure ]; then
+	/usr/sbin/distro-aplicar-config
+
+	systemctl --global enable distro-papel-de-parede.timer > /dev/null 2>&1 || true
+	systemctl enable distro-apps-extras.service > /dev/null 2>&1 || true
+
+	# Num sistema já ligado (atualização), começa a instalar os apps extras agora
+	if [ -d /run/systemd/system ] && ! ischroot; then
+		systemctl daemon-reload || true
+		systemctl start --no-block distro-apps-extras.service || true
+	fi
+fi

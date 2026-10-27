@@ -1,0 +1,12 @@
+Package: distro-sistema
+Version: @VERSAO@
+Architecture: all
+Maintainer: @DISTRO_NAME@ <lucaslbn08@users.noreply.github.com>
+Section: misc
+Priority: optional
+Depends: flatpak, timeshift, zram-tools, ufw, plasma-vault, gocryptfs, kio-gdrive, libpam-kwallet5, plasma-workspace, kde-cli-tools, debianutils
+Recommends: google-chrome-stable, firefox-esr
+Description: Identidade e ajustes do sistema @DISTRO_NAME@
+ Visual estilo macOS, apps de sites (WhatsApp, Canva, Google Drive), papel de parede
+ de dia e de noite, pontos de restauração antes de atualizar, firewall, zram e
+ o canal de atualizações do sistema.
