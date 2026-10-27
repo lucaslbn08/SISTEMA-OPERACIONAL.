@@ -1,0 +1,25 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Date: Tue, 27 Oct 2026 11:11:12 +0000
+Label: distro
+Origin: distro
+MD5Sum:
+ 1582bf7dfe13033c27df6ac9c6ac204b             1936 Packages
+ 2db9af6a785345e0aa79705fdc1a721f              871 Packages.gz
+SHA1:
+ 8c4022fc248c3d5a59eeb475b0facdc2a00231d7             1936 Packages
+ 97facf8189c8333f6cb73d7d133ce8a93e8395df              871 Packages.gz
+SHA256:
+ e805655bef65d7aee9dbe28b19dc1724faf85c389b0f98bbf72c766e32fd1dff             1936 Packages
+ 23be70e3144e654ce305025702baf66746e4e517ebfa2c439ecf38ae7bdbb742              871 Packages.gz
+SHA512:
+ 3ee1f57b90932874f41a2f463caccd07a2e459fd588475a233900ecb847b26177ae8fa7dbb891f950c78b304bd8bbde0deea68b5394d730d89a575c4eee90f78             1936 Packages
+ a9870c393d220bbe4027df8aacf3c883611091679d3cc50bda96618d25177cd91cc012acba18da9d4f173740a63c41eeca403826fe7fc0b61b7aa189ed7aaaa4              871 Packages.gz
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSgSQ6izvwhdvBZNcTkmh0c+KNEWwUCauCG0AAKCRDkmh0c+KNE
+W4vnAP4jtDHAeFN2oNO+91Dl8M8LyHZdpZLTOwQwEXwzyyJl4wD/ZYZ3yibSzqUN
+hN7Nbg2jgcJwBN2oee6eRphVFW3u3Qs=
+=EYTH
+-----END PGP SIGNATURE-----
