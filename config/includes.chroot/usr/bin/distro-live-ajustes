@@ -1,0 +1,13 @@
+#!/bin/sh
+# Só na sessão Live (pendrive): sem bloqueio de tela, sem apagar a tela e sem suspender,
+# para que nada interrompa os testes ou a instalação.
+[ -d /run/live/medium ] || exit 0
+
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key Autolock false
+kwriteconfig6 --file kscreenlockerrc --group Daemon --key LockOnResume false
+
+for perfil in AC Battery LowBattery; do
+	kwriteconfig6 --file powerdevilrc --group "$perfil" --group Display --key DimDisplayWhenIdle false
+	kwriteconfig6 --file powerdevilrc --group "$perfil" --group Display --key TurnOffDisplayWhenIdle false
+	kwriteconfig6 --file powerdevilrc --group "$perfil" --group SuspendAndShutdown --key AutoSuspendAction 0
+done

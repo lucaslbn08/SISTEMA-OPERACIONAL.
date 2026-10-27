@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Ajustes da sessão Live
+Exec=distro-live-ajustes
+NoDisplay=true
+X-KDE-autostart-phase=0

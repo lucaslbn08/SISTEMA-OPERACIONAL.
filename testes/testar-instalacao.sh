@@ -25,6 +25,7 @@ clicar() {
 n=0
 print() {
 	n=$((n + 1))
+	monitor "sendkey shift"; sleep 1
 	monitor "screendump /tmp/tela.ppm"
 	sleep 2
 	convert /tmp/tela.ppm "$telas/$(printf %02d $n)-$1.png"
@@ -43,6 +44,7 @@ digitar() {
 			*) continue ;;
 		esac
 		monitor "sendkey $tecla"
+		sleep 0.15
 	done
 }
 
