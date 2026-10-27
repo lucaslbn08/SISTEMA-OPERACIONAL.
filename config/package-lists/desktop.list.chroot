@@ -4,6 +4,11 @@ live-config
 live-config-systemd
 calamares
 calamares-settings-debian
+# Carregador de boot UEFI já incluído: a instalação não depende de internet
+grub-efi-amd64
+grub-efi-amd64-signed
+shim-signed
+efibootmgr
 
 # Interface KDE Plasma 6
 kde-plasma-desktop

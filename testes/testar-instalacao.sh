@@ -57,7 +57,7 @@ qemu-system-x86_64 -enable-kvm -m 4096 -smp 2 -cpu host \
 	-vga none -device virtio-vga,xres=1440,yres=900 -display none \
 	-drive file=/tmp/disco.qcow2,if=virtio \
 	-cdrom "$iso" -boot d \
-	-device qemu-xhci -device usb-tablet \
+	-device qemu-xhci -device usb-tablet -nic none \
 	-monitor "unix:$mon,server,nowait" -qmp "unix:$qmp,server,nowait" &
 qemu=$!
 
@@ -115,8 +115,8 @@ monitor "sendkey ctrl-alt-t"
 sleep 10
 digitar "hostnamectl"; monitor "sendkey ret"
 digitar "lsblk -f"; monitor "sendkey ret"
-# Instalar um programa deve criar um ponto de restauração antes
-digitar "sudo apt-get install -y cowsay"; monitor "sendkey ret"
+# Sem internet na VM: chama direto o script que o apt chama antes de instalar programas
+digitar "sudo distro-snapshot"; monitor "sendkey ret"
 sleep 3; digitar "senha1234teste"; monitor "sendkey ret"
 sleep 90
 digitar "sudo timeshift --list"; monitor "sendkey ret"
