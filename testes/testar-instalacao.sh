@@ -95,10 +95,11 @@ sleep 2; print usuarios-preenchido
 clicar 1106 781
 sleep 6; print resumo
 
-# Instalar (o botão "Próximo" vira "Instalar") e confirma
-clicar 1106 781
+# Instalar (no resumo a janela fica mais alta e o botão desce) e confirma
+clicar 1106 836
 sleep 4; print confirmar
 monitor "sendkey ret"
+sleep 10; print depois-de-confirmar
 for i in 1 2 3 4 5 6 7 8; do
 	sleep 90; print "instalando-$i"
 done
