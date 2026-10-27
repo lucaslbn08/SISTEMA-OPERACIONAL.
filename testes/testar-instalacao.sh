@@ -115,7 +115,7 @@ monitor "sendkey ctrl-alt-t"
 sleep 10
 digitar "clear"; monitor "sendkey ret"
 digitar "apt-cache policy distro-sistema"; monitor "sendkey ret"
-digitar "systemctl --user list-timers distro-papel-de-parede.timer"; monitor "sendkey ret"
+digitar "systemctl --user --no-pager list-timers distro-papel-de-parede.timer"; monitor "sendkey ret"
 # Sem internet na VM: chama direto o script que o apt chama antes de instalar programas
 digitar "sudo distro-snapshot"; monitor "sendkey ret"
 sleep 3; digitar "senha1234teste"; monitor "sendkey ret"
