@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Instalação do Windows 11 com respostas automáticas:
+  - português do Brasil, teclado ABNT2, fuso de Brasília
+  - sem exigir conta Microsoft (o usuário local é criado na tela do próprio Windows)
+  - sem telas de propaganda e com as opções de privacidade desligadas
+  - depois do primeiro login, roda leve\pos-instalacao.ps1 (remove o que pesa e instala os apps)
+  A escolha do disco/partição continua manual, para não apagar o outro sistema.
+-->
+<unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+	<settings pass="windowsPE">
+		<component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<SetupUILanguage>
+				<UILanguage>pt-BR</UILanguage>
+			</SetupUILanguage>
+			<InputLocale>0416:00010416</InputLocale>
+			<SystemLocale>pt-BR</SystemLocale>
+			<UILanguage>pt-BR</UILanguage>
+			<UserLocale>pt-BR</UserLocale>
+		</component>
+		<component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<UserData>
+				<AcceptEula>true</AcceptEula>
+			</UserData>
+		</component>
+	</settings>
+	<settings pass="specialize">
+		<component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<RunSynchronous>
+				<!-- Permite criar usuário local, sem conta Microsoft -->
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>reg add HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE /v BypassNRO /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<!-- Sem criptografia automática do disco: ela impediria o outro sistema de redimensionar o Windows -->
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>reg add HKLM\SYSTEM\CurrentControlSet\Control\BitLocker /v PreventDeviceEncryption /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<!-- Copia o script de pós-instalação do pendrive para o disco (o pendrive pode ser retirado depois) -->
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>cmd /c "for %d in (D E F G H I J K L M) do @if exist %d:\leve\pos-instalacao.ps1 xcopy /e /i /y %d:\leve C:\Windows\Setup\leve"</Path>
+				</RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+	</settings>
+	<settings pass="oobeSystem">
+		<component name="Microsoft-Windows-International-Core" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<InputLocale>0416:00010416</InputLocale>
+			<SystemLocale>pt-BR</SystemLocale>
+			<UILanguage>pt-BR</UILanguage>
+			<UserLocale>pt-BR</UserLocale>
+		</component>
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<TimeZone>E. South America Standard Time</TimeZone>
+			<OOBE>
+				<HideEULAPage>true</HideEULAPage>
+				<HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+				<HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+				<ProtectYourPC>3</ProtectYourPC>
+			</OOBE>
+			<FirstLogonCommands>
+				<SynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<CommandLine>powershell -NoProfile -ExecutionPolicy Bypass -File C:\Windows\Setup\leve\pos-instalacao.ps1</CommandLine>
+					<Description>Deixar o Windows leve e instalar os apps</Description>
+				</SynchronousCommand>
+			</FirstLogonCommands>
+		</component>
+	</settings>
+</unattend>

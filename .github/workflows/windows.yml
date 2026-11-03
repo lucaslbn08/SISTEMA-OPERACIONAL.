@@ -1,0 +1,36 @@
+name: Arquivos do Windows
+
+# Confere os arquivos da instalação do Windows num Windows de verdade e empacota para o pendrive
+on:
+  push:
+    branches: [main]
+    paths:
+      - "windows/**"
+      - ".github/workflows/windows.yml"
+  workflow_dispatch:
+
+jobs:
+  conferir:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Conferir o script e o autounattend.xml
+        shell: powershell
+        run: |
+          $erros = $null
+          [System.Management.Automation.Language.Parser]::ParseFile(
+            "$PWD\windows\pendrive\leve\pos-instalacao.ps1", [ref]$null, [ref]$erros) | Out-Null
+          if ($erros) { $erros | ForEach-Object { Write-Error $_ }; exit 1 }
+          [xml](Get-Content -Raw windows\pendrive\autounattend.xml) | Out-Null
+          $bytes = [IO.File]::ReadAllBytes("$PWD\windows\pendrive\leve\pos-instalacao.ps1")
+          if ($bytes[0] -ne 0xEF) { Write-Error "pos-instalacao.ps1 precisa de UTF-8 com BOM"; exit 1 }
+          Write-Host "Tudo certo"
+
+      - name: Empacotar para o pendrive
+        uses: actions/upload-artifact@v4
+        with:
+          name: arquivos-pendrive-windows
+          path: windows/pendrive/
+          retention-days: 90

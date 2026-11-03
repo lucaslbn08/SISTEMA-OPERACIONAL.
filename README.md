@@ -18,6 +18,11 @@ Sistema operacional próprio baseado em **Debian 13**, com visual no estilo macO
 - **Google Drive** (app e pasta no gerenciador de arquivos) e **Bambu Studio** (instalado sozinho quando houver internet)
 - Português do Brasil, teclado ABNT2, Wi-Fi, Bluetooth, impressoras e scanners
 
+## Windows junto (dois sistemas)
+
+Para ter também um Windows 11 leve no mesmo note (para o CorelDRAW e outros programas só de Windows),
+veja [windows/LEIA-ME.md](windows/LEIA-ME.md).
+
 ## Como baixar o .iso
 
 1. Abra a aba **Actions** deste repositório

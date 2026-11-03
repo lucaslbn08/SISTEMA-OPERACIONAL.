@@ -9,6 +9,8 @@ grub-efi-amd64
 grub-efi-amd64-signed
 shim-signed
 efibootmgr
+# Detecta o Windows para o menu de inicialização (dois sistemas no mesmo note)
+os-prober
 
 # Interface KDE Plasma 6
 kde-plasma-desktop

@@ -1,0 +1,2 @@
+# Scripts do Windows: PowerShell 5.1 precisa de UTF-8 com BOM (já gravado no arquivo)
+*.ps1 -text

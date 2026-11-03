@@ -52,9 +52,18 @@ echo "VARIANT=\"Baseado em Debian\"" >> /usr/lib/os-release
 
 # Boot: nome no menu do GRUB e tela de carregamento gráfica
 mkdir -p /etc/default/grub.d
-echo "GRUB_DISTRIBUTOR=\"$DISTRO_NAME\"" > /etc/default/grub.d/distro.cfg
+{
+	echo "GRUB_DISTRIBUTOR=\"$DISTRO_NAME\""
+	# Procura outros sistemas (Windows) e coloca no menu de inicialização
+	echo "GRUB_DISABLE_OS_PROBER=false"
+} > /etc/default/grub.d/distro.cfg
 if [ -f /etc/default/grub ]; then
 	sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT="quiet"$/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"/' /etc/default/grub
+fi
+
+# Num sistema já instalado, atualiza o menu de inicialização (inclui o Windows, se houver)
+if [ -d /boot/grub ] && [ -d /run/systemd/system ] && ! ischroot; then
+	update-grub > /dev/null 2>&1 || true
 fi
 
 # zram: comprime a memória, rende mais nos 8 GB
