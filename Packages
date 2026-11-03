@@ -1,0 +1,57 @@
+Package: distro-sistema
+Architecture: all
+Version: 1.0.202610271111
+Priority: optional
+Section: misc
+Maintainer: MeuOS <lucaslbn08@users.noreply.github.com>
+Depends: flatpak, timeshift, zram-tools, ufw, plasma-vault, gocryptfs, kio-gdrive, libpam-kwallet5, plasma-workspace, kde-cli-tools, debianutils
+Recommends: google-chrome-stable, firefox-esr
+Filename: ./distro-sistema_1.0.202610271111_all.deb
+Size: 406004
+MD5sum: b27128c2159008e2f079f6689035f768
+SHA1: 397be522ec9f55c92bd405032b64b1783344a670
+SHA256: fd487f65a24a872f6747a72e094d976c50de8885b41f2657b5d0136bfed73a34
+SHA512: 665b29305b5d0bf9e315cda7b5712a334bb22eeede00bfbaa0904c561c6e30c3b02c1e4dc31d0a9577fddb805e97daf6d7bf8a63fbeffd898eb4379f750acecd
+Description: Identidade e ajustes do sistema MeuOS
+ Visual estilo macOS, apps de sites (WhatsApp, Canva, Google Drive), papel de parede
+ de dia e de noite, pontos de restauração antes de atualizar, firewall, zram e
+ o canal de atualizações do sistema.
+
+Package: distro-sistema
+Architecture: all
+Version: 1.0.202611030116
+Priority: optional
+Section: misc
+Maintainer: MeuOS <lucaslbn08@users.noreply.github.com>
+Depends: os-prober, flatpak, timeshift, zram-tools, ufw, plasma-vault, gocryptfs, kio-gdrive, libpam-kwallet5, plasma-workspace, kde-cli-tools, debianutils
+Recommends: google-chrome-stable, firefox-esr
+Filename: ./distro-sistema_1.0.202611030116_all.deb
+Size: 405996
+MD5sum: a6600b429cc9c4c33b1d227c98e156b9
+SHA1: 0eae01b10dde9fbbd9f8a889fdd83da9d0ab5b5b
+SHA256: 717343c91c594bceb637cc0dbe83406ede94c2e28fd0a232fda71afa5559b6e8
+SHA512: 356179c0d17d285b95cb46783ab1f7e5d82fc441eebc59151814dee3deda44d26611e362d0ff026cab873d24859a69c645f8deebaed9d6b13010099f5115abd1
+Description: Identidade e ajustes do sistema MeuOS
+ Visual estilo macOS, apps de sites (WhatsApp, Canva, Google Drive), papel de parede
+ de dia e de noite, pontos de restauração antes de atualizar, firewall, zram e
+ o canal de atualizações do sistema.
+
+Package: distro-sistema
+Architecture: all
+Version: 1.0.202611030117
+Priority: optional
+Section: misc
+Maintainer: MeuOS <lucaslbn08@users.noreply.github.com>
+Depends: os-prober, flatpak, timeshift, zram-tools, ufw, plasma-vault, gocryptfs, kio-gdrive, libpam-kwallet5, plasma-workspace, kde-cli-tools, debianutils
+Recommends: google-chrome-stable, firefox-esr
+Filename: ./distro-sistema_1.0.202611030117_all.deb
+Size: 406024
+MD5sum: 1328b8e5b85b3cbf4df7f0365eb2df6e
+SHA1: 9ccc95d7f1214e83fbc80274ab2e0c24dce0b69b
+SHA256: ecf5215f62b0b3098a9484f421a9d335617a09917487330c0294f2d685938fbb
+SHA512: 816c10160bc93d89a909fda0c9c2fdb0083350c04edc319b7b99df6d6b3804a8f63b9b890e01bf0309578fce5b1c7b50d15aa623e1722bdaaebcaf40d5f327e5
+Description: Identidade e ajustes do sistema MeuOS
+ Visual estilo macOS, apps de sites (WhatsApp, Canva, Google Drive), papel de parede
+ de dia e de noite, pontos de restauração antes de atualizar, firewall, zram e
+ o canal de atualizações do sistema.
+

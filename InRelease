@@ -1,0 +1,25 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Date: Tue, 03 Nov 2026 01:17:35 +0000
+Label: distro
+Origin: distro
+MD5Sum:
+ d463ce24474000c7d9c9f213a9bc8b0d             2926 Packages
+ 4ecac9400063f355455eba38dd446172             1085 Packages.gz
+SHA1:
+ 7be72b3a5438e77e1c42dcdf2b0a114410fcf2db             2926 Packages
+ 2e79742284ea8d354aba9baca6cdfce83eadc14f             1085 Packages.gz
+SHA256:
+ 290d816fb55e5c875912bd5ba77b3ca3d6aae6cdf5a623972985022eede77502             2926 Packages
+ f297620ef93cf87476a0fdbc4ce8a43d2309b3290107aec70ac69fe7e5948528             1085 Packages.gz
+SHA512:
+ 84c72e0b068d2a694fe98d1adad2150d3b59b1f4f934a9d9f1bbf06fdc1acc5b7f862ed00612ec0c7574252f20d29a86a1aeb585427846846b062128c4da03dc             2926 Packages
+ f56f5b078cf45feec2973f0b60008a923e6be1eafb22b630d01c10c762074f39d08ee95a5bfd505a479989763bf34b6ba636aea6c151a1299cbde9bb62787f78             1085 Packages.gz
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSgSQ6izvwhdvBZNcTkmh0c+KNEWwUCauk2LwAKCRDkmh0c+KNE
+WydjAP91c1zwrics397BB27PMCLIX5a5v563ah63deMEaBtszwEA7CiZijIoLUmK
+zZIV0GBN4j7Ck75vKaEsOYyKcO+h/AE=
+=Tweb
+-----END PGP SIGNATURE-----
